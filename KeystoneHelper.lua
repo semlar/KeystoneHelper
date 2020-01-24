@@ -60,3 +60,29 @@ end
 hooksecurefunc(ItemRefTooltip, 'SetHyperlink', DecorateTooltip) 
 --ItemRefTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
 GameTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
+
+do
+	--[[ Auto-slot keystone when interacting with the pedastal ]]
+	local f = CreateFrame('frame')
+	f:SetScript('OnEvent', function(self, event, addon)
+		if addon == 'Blizzard_ChallengesUI' then
+			ChallengesKeystoneFrame:HookScript('OnShow', function()
+				-- todo: see if PickupItem(158923) works for this
+				if not C_ChallengeMode.GetSlottedKeystoneInfo() then
+					for bag = 0, NUM_BAG_SLOTS do
+						for slot = 1, GetContainerNumSlots(bag) do
+							if GetContainerItemID == 158923 then
+								PickupContainerItem(bag, slot)
+								if CursorHasItem() then
+									C_ChallengeMode.SlotKeystone()
+								end
+							end
+						end
+					end
+				end
+			end)
+			self:UnregisterEvent(event)
+		end
+	end)
+	f:RegisterEvent('ADDON_LOADED')
+end
