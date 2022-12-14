@@ -75,7 +75,15 @@ end
 -- hack to handle ItemRefTooltip:GetItem() not returning a proper keystone link
 hooksecurefunc(ItemRefTooltip, 'SetHyperlink', DecorateTooltip) 
 --ItemRefTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
-GameTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
+--GameTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
+
+local function OnTooltipSetItem(tooltip, data)
+	if tooltip == GameTooltip then
+		DecorateTooltip(tooltip, data)
+	end
+end
+
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
 
 do
 	--[[ Auto-slot keystone when interacting with the pedastal ]]
