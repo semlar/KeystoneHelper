@@ -14,7 +14,7 @@ local function GetModifiers(linkType, ...)
 	local itemID, instanceID, mythicLevel, notDepleted, _ = ... -- "keystone" links
 	if linkType:find('item') then -- only used for ItemRefTooltip currently
 		_, _, _, _, _, _, _, _, _, _, _, _, _, instanceID, mythicLevel = ...
-		if ... == '138019' or ... == '158923' then -- mythic keystone
+		if ... == '138019' or ... == '158923' or ... == '180653' then -- mythic keystone
 			modifierOffset = 16
 		else
 			return
@@ -91,11 +91,11 @@ do
 	f:SetScript('OnEvent', function(self, event, addon)
 		if addon == 'Blizzard_ChallengesUI' then
 			ChallengesKeystoneFrame:HookScript('OnShow', function()
-				-- todo: see if PickupItem(158923) works for this
+				-- todo: see if PickupItem(180653) works for this
 				if not C_ChallengeMode.GetSlottedKeystoneInfo() then
 					for bag = 0, NUM_BAG_SLOTS do
 						for slot = 1, GetContainerNumSlots(bag) do
-							if GetContainerItemID == 158923 then
+							if GetContainerItemID == 180653 then
 								PickupContainerItem(bag, slot)
 								if CursorHasItem() then
 									C_ChallengeMode.SlotKeystone()
