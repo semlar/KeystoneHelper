@@ -14,7 +14,7 @@ local function GetModifiers(linkType, ...)
 	local itemID, instanceID, mythicLevel, notDepleted, _ = ... -- "keystone" links
 	if linkType:find('item') then -- only used for ItemRefTooltip currently
 		_, _, _, _, _, _, _, _, _, _, _, _, _, instanceID, mythicLevel = ...
-		if ... == '138019' or ... == '158923' then -- mythic keystone
+		if ... == '138019' or ... == '158923' or ... == '180653' then -- mythic keystone
 			modifierOffset = 16
 		else
 			return
@@ -75,7 +75,15 @@ end
 -- hack to handle ItemRefTooltip:GetItem() not returning a proper keystone link
 hooksecurefunc(ItemRefTooltip, 'SetHyperlink', DecorateTooltip) 
 --ItemRefTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
-GameTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
+--GameTooltip:HookScript('OnTooltipSetItem', DecorateTooltip)
+
+local function OnTooltipSetItem(tooltip, data)
+	if tooltip == GameTooltip then
+		DecorateTooltip(tooltip, data)
+	end
+end
+
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
 
 do
 	--[[ Auto-slot keystone when interacting with the pedastal ]]
@@ -83,11 +91,11 @@ do
 	f:SetScript('OnEvent', function(self, event, addon)
 		if addon == 'Blizzard_ChallengesUI' then
 			ChallengesKeystoneFrame:HookScript('OnShow', function()
-				-- todo: see if PickupItem(158923) works for this
+				-- todo: see if PickupItem(180653) works for this
 				if not C_ChallengeMode.GetSlottedKeystoneInfo() then
 					for bag = 0, NUM_BAG_SLOTS do
 						for slot = 1, GetContainerNumSlots(bag) do
-							if GetContainerItemID == 158923 then
+							if GetContainerItemID == 180653 then
 								PickupContainerItem(bag, slot)
 								if CursorHasItem() then
 									C_ChallengeMode.SlotKeystone()
